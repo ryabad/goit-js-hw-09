@@ -9,9 +9,9 @@ refs.form.addEventListener('submit', handleSubmit);
 function handleSubmit(event) {
   event.preventDefault();
 
-  amount = Number(refs.form.elements.amount.value);
-  delayStep = Number(refs.form.elements.step.value);
-  delay = Number(refs.form.elements.delay.value);
+  const amount = Number(refs.form.elements.amount.value);
+  const delayStep = Number(refs.form.elements.step.value);
+  const delay = Number(refs.form.elements.delay.value);
 
   let current = 1;
 
