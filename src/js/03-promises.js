@@ -5,20 +5,25 @@ const refs = {
 };
 
 refs.form.addEventListener('submit', handleSubmit);
+let delayInfo;
 
 function handleSubmit(event) {
   event.preventDefault();
+  delayInfo = null;
 
   const amount = Number(refs.form.elements.amount.value);
   const delayStep = Number(refs.form.elements.step.value);
   const delay = Number(refs.form.elements.delay.value);
 
+  delayInfo += delay;
   let current = 1;
+  let timerId = null;
 
   setTimeout(() => {
     if (amount <= 0) {
       return;
     }
+
     function go() {
       createPromise(current, delayStep)
         .then(({ position, delay }) => {
@@ -31,13 +36,20 @@ function handleSubmit(event) {
             `❌ Rejected promise ${position} in ${delay}ms`
           );
         });
+      if (amount === 1) {
+        return;
+      }
       if (current === amount) {
         clearInterval(timerId);
       }
       current++;
     }
-    go();
-    let timerId = setInterval(go, delayStep);
+    if (amount === 1) {
+      go();
+    } else {
+      go();
+      timerId = setInterval(go, delayStep);
+    }
   }, delay);
 }
 
@@ -46,10 +58,11 @@ function createPromise(position, delay) {
     const shouldResolve = Math.random() > 0.3;
     if (shouldResolve) {
       // Fulfill
-      resolve({ position, delay });
+      resolve({ position, delay: delayInfo });
     } else {
       // Reject
-      reject({ position, delay });
+      reject({ position, delay: delayInfo });
     }
+    delayInfo += delay;
   });
 }
