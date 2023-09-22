@@ -14,7 +14,6 @@ function handleSubmit(event) {
   const delay = Number(refs.form.elements.delay.value);
 
   let current = 1;
-  let timerId = null;
 
   setTimeout(() => {
     if (amount <= 0) {
@@ -38,7 +37,7 @@ function handleSubmit(event) {
       current++;
     }
     go();
-    timerId = setInterval(go, delayStep);
+    let timerId = setInterval(go, delayStep);
   }, delay);
 }
 
