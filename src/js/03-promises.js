@@ -16,7 +16,7 @@ function handleSubmit(event) {
   let current = 1;
 
   setTimeout(() => {
-    if (amount === 0) {
+    if (amount <= 0) {
       return;
     }
     function go() {
