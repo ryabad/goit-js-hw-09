@@ -1,0 +1,55 @@
+import Notiflix from 'notiflix';
+
+const refs = {
+  form: document.querySelector('form.form'),
+};
+
+refs.form.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  event.preventDefault();
+
+  amount = Number(refs.form.elements.amount.value);
+  delayStep = Number(refs.form.elements.step.value);
+  delay = Number(refs.form.elements.delay.value);
+
+  let current = 1;
+
+  setTimeout(() => {
+    if (amount === 0) {
+      return;
+    }
+    function go() {
+      createPromise(current, delayStep)
+        .then(({ position, delay }) => {
+          Notiflix.Notify.success(
+            `✅ Fulfilled promise ${position} in ${delay}ms`
+          );
+        })
+        .catch(({ position, delay }) => {
+          Notiflix.Notify.failure(
+            `❌ Rejected promise ${position} in ${delay}ms`
+          );
+        });
+      if (current === amount) {
+        clearInterval(timerId);
+      }
+      current++;
+    }
+    go();
+    let timerId = setInterval(go, delayStep);
+  }, delay);
+}
+
+function createPromise(position, delay) {
+  return new Promise((resolve, reject) => {
+    const shouldResolve = Math.random() > 0.3;
+    if (shouldResolve) {
+      // Fulfill
+      resolve({ position, delay });
+    } else {
+      // Reject
+      reject({ position, delay });
+    }
+  });
+}
