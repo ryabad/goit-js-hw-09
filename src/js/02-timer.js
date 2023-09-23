@@ -51,7 +51,6 @@ function countTime(chosen) {
   const currentTime = new Date().getTime();
   const diff = chosen - currentTime;
   const convertedDiff = convertMs(diff);
-  console.log(diff);
 
   refs.days.textContent = `${addLeadingZero(convertedDiff.days)}`;
   refs.hours.textContent = `${addLeadingZero(convertedDiff.hours)}`;
