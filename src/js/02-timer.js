@@ -5,12 +5,15 @@ import Notiflix from 'notiflix';
 const refs = {
   inputDate: document.querySelector('input#datetime-picker'),
   start: document.querySelector('button[data-start]'),
+  resetBtn: document.querySelector('button[data-reset]'),
   days: document.querySelector('.value[data-days]'),
   hours: document.querySelector('.value[data-hours]'),
   minutes: document.querySelector('.value[data-minutes]'),
   seconds: document.querySelector('.value[data-seconds]'),
 };
 let timerId = null;
+
+refs.start.setAttribute(`disabled`, '');
 
 const options = {
   enableTime: true,
@@ -22,7 +25,6 @@ const options = {
     const chosenTime = selectedDates[0].getTime();
     const currentTime = new Date().getTime();
     if (chosenTime < currentTime) {
-      refs.start.setAttribute('disabled', '');
       Notiflix.Notify.failure('Please choose a date in the future');
     } else {
       refs.start.removeAttribute('disabled');
@@ -33,29 +35,39 @@ const options = {
 flatpickr(refs.inputDate, options);
 
 refs.start.addEventListener('click', handleClick);
+refs.resetBtn.addEventListener('click', handleClickReset);
 
 function handleClick() {
   const chosenTime = new Date(`${refs.inputDate.value}`).getTime();
   countTime(chosenTime);
-  const interval = chosenTime - new Date().getTime();
 
   timerId = setInterval(countTime, 1000, chosenTime);
 
-  setTimeout(() => {
-    clearInterval(timerId);
-  }, interval);
   refs.start.setAttribute('disabled', '');
+  refs.inputDate.setAttribute(`disabled`, '');
 }
 
-function countTime(current) {
+function countTime(chosen) {
   const currentTime = new Date().getTime();
-  const diff = current - currentTime;
+  const diff = chosen - currentTime;
   const convertedDiff = convertMs(diff);
+  console.log(diff);
 
   refs.days.textContent = `${addLeadingZero(convertedDiff.days)}`;
   refs.hours.textContent = `${addLeadingZero(convertedDiff.hours)}`;
   refs.minutes.textContent = `${addLeadingZero(convertedDiff.minutes)}`;
   refs.seconds.textContent = `${addLeadingZero(convertedDiff.seconds)}`;
+
+  const check =
+    refs.days.textContent === '00' &&
+    refs.hours.textContent === '00' &&
+    refs.minutes.textContent === '00' &&
+    refs.seconds.textContent === '00';
+
+  if (check) {
+    clearInterval(timerId);
+    refs.inputDate.removeAttribute('disabled');
+  }
 }
 
 function addLeadingZero(value) {
@@ -66,6 +78,20 @@ function addLeadingZero(value) {
     return value.padStart(2, '0');
   }
   return value;
+}
+
+function handleClickReset() {
+  // location.reload();
+  clearInterval(timerId);
+  resetTimer();
+  refs.inputDate.removeAttribute('disabled');
+}
+
+function resetTimer() {
+  refs.days.textContent = '00';
+  refs.hours.textContent = '00';
+  refs.minutes.textContent = '00';
+  refs.seconds.textContent = '00';
 }
 
 function convertMs(ms) {

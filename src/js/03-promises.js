@@ -20,8 +20,10 @@ function handleSubmit(event) {
   let timerId = null;
 
   setTimeout(() => {
-    if (amount <= 0) {
-      return;
+    if (amount <= 0 || delayStep < 0 || delay < 0) {
+      return Notiflix.Notify.failure(
+        'Delay fields must be positive, and amount > 0'
+      );
     }
 
     function go() {
