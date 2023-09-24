@@ -32,7 +32,7 @@ const options = {
   },
 };
 
-flatpickr(refs.inputDate, options);
+let calendar = flatpickr(refs.inputDate, options);
 
 refs.start.addEventListener('click', handleClick);
 refs.resetBtn.addEventListener('click', handleClickReset);
@@ -83,6 +83,11 @@ function handleClickReset() {
   // location.reload();
   clearInterval(timerId);
   resetTimer();
+  calendar.clear();
+
+  const date = new Date();
+  calendar.setDate(date, 'y/m/d');
+
   refs.inputDate.removeAttribute('disabled');
 }
 
